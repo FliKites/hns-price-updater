@@ -9,133 +9,177 @@ canvas {
 }
 </style>
 <script>
-var w = c.width = window.innerWidth,
-    h = c.height = window.innerHeight,
-    ctx = c.getContext( '2d' ),
-    
-    opts = {
-      
-      len: 20,
-      count: 50,
-      baseTime: 10,
-      addedTime: 10,
-      dieChance: .05,
-      spawnChance: 1,
-      sparkChance: .1,
-      sparkDist: 10,
-      sparkSize: 2,
-      
-      color: 'hsl(hue,100%,light%)',
-      baseLight: 50,
-      addedLight: 10, // [50-10,50+10]
-      shadowToTimePropMult: 6,
-      baseLightInputMultiplier: .01,
-      addedLightInputMultiplier: .02,
-      
-      cx: w / 2,
-      cy: h / 2,
-      repaintAlpha: .04,
-      hueChange: .1
-    },
-    
-    tick = 0,
-    lines = [],
-    dieX = w / 2 / opts.len,
-    dieY = h / 2 / opts.len,
-    
-    baseRad = Math.PI * 2 / 6;
-    
-ctx.fillStyle = 'black';
-ctx.fillRect( 0, 0, w, h );
+var c = document.getElementById("canvas");
+var ctx = c.getContext("2d");
 
-function loop() {
-  
-  window.requestAnimationFrame( loop );
-  
-  ++tick;
-  
-  ctx.globalCompositeOperation = 'source-over';
-  ctx.shadowBlur = 0;
-  ctx.fillStyle = 'rgba(0,0,0,alp)'.replace( 'alp', opts.repaintAlpha );
-  ctx.fillRect( 0, 0, w, h );
-  ctx.globalCompositeOperation = 'lighter';
-  
-  if( lines.length < opts.count && Math.random() < opts.spawnChance )
-    lines.push( new Line );
-  
-  lines.map( function( line ){ line.step(); } );
+function resize() {
+    var box = c.getBoundingClientRect();
+    c.width = box.width;
+    c.height = box.height;
 }
-function Line(){
-  
-  this.reset();
-}
-Line.prototype.reset = function(){
-  
-  this.x = 0;
-  this.y = 0;
-  this.addedX = 0;
-  this.addedY = 0;
-  
-  this.rad = 0;
-  
-  this.lightInputMultiplier = opts.baseLightInputMultiplier + opts.addedLightInputMultiplier * Math.random();
-  
-  this.color = opts.color.replace( 'hue', tick * opts.hueChange );
-  this.cumulativeTime = 0;
-  
-  this.beginPhase();
-}
-Line.prototype.beginPhase = function(){
-  
-  this.x += this.addedX;
-  this.y += this.addedY;
-  
-  this.time = 0;
-  this.targetTime = ( opts.baseTime + opts.addedTime * Math.random() ) |0;
-  
-  this.rad += baseRad * ( Math.random() < .5 ? 1 : -1 );
-  this.addedX = Math.cos( this.rad );
-  this.addedY = Math.sin( this.rad );
-  
-  if( Math.random() < opts.dieChance || this.x > dieX || this.x < -dieX || this.y > dieY || this.y < -dieY )
-    this.reset();
-}
-Line.prototype.step = function(){
-  
-  ++this.time;
-  ++this.cumulativeTime;
-  
-  if( this.time >= this.targetTime )
-    this.beginPhase();
-  
-  var prop = this.time / this.targetTime,
-      wave = Math.sin( prop * Math.PI / 2  ),
-      x = this.addedX * wave,
-      y = this.addedY * wave;
-  
-  ctx.shadowBlur = prop * opts.shadowToTimePropMult;
-  ctx.fillStyle = ctx.shadowColor = this.color.replace( 'light', opts.baseLight + opts.addedLight * Math.sin( this.cumulativeTime * this.lightInputMultiplier ) );
-  ctx.fillRect( opts.cx + ( this.x + x ) * opts.len, opts.cy + ( this.y + y ) * opts.len, 2, 2 );
-  
-  if( Math.random() < opts.sparkChance )
-    ctx.fillRect( opts.cx + ( this.x + x ) * opts.len + Math.random() * opts.sparkDist * ( Math.random() < .5 ? 1 : -1 ) - opts.sparkSize / 2, opts.cy + ( this.y + y ) * opts.len + Math.random() * opts.sparkDist * ( Math.random() < .5 ? 1 : -1 ) - opts.sparkSize / 2, opts.sparkSize, opts.sparkSize )
-}
-loop();
 
-window.addEventListener( 'resize', function(){
+var light = {
+    x: 160,
+    y: 200
+}
+
+var colors = ["#f5c156", "#e6616b", "#5cd3ad"];
+
+function drawLight() {
+    ctx.beginPath();
+    ctx.arc(light.x, light.y, 1000, 0, 2 * Math.PI);
+    var gradient = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, 1000);
+    gradient.addColorStop(0, "#3b4654");
+    gradient.addColorStop(1, "#2c343f");
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(light.x, light.y, 20, 0, 2 * Math.PI);
+    gradient = ctx.createRadialGradient(light.x, light.y, 0, light.x, light.y, 5);
+    gradient.addColorStop(0, "#fff");
+    gradient.addColorStop(1, "#3b4654");
+    ctx.fillStyle = gradient;
+    ctx.fill();
+}
+
+function Box() {
+    this.half_size = Math.floor((Math.random() * 50) + 1);
+    this.x = Math.floor((Math.random() * c.width) + 1);
+    this.y = Math.floor((Math.random() * c.height) + 1);
+    this.r = Math.random() * Math.PI;
+    this.shadow_length = 2000;
+    this.color = colors[Math.floor((Math.random() * colors.length))];
   
-  w = c.width = window.innerWidth;
-  h = c.height = window.innerHeight;
-  ctx.fillStyle = 'black';
-  ctx.fillRect( 0, 0, w, h );
-  
-  opts.cx = w / 2;
-  opts.cy = h / 2;
-  
-  dieX = w / 2 / opts.len;
-  dieY = h / 2 / opts.len;
-});
+    this.getDots = function() {
+
+        var full = (Math.PI * 2) / 4;
+
+
+        var p1 = {
+            x: this.x + this.half_size * Math.sin(this.r),
+            y: this.y + this.half_size * Math.cos(this.r)
+        };
+        var p2 = {
+            x: this.x + this.half_size * Math.sin(this.r + full),
+            y: this.y + this.half_size * Math.cos(this.r + full)
+        };
+        var p3 = {
+            x: this.x + this.half_size * Math.sin(this.r + full * 2),
+            y: this.y + this.half_size * Math.cos(this.r + full * 2)
+        };
+        var p4 = {
+            x: this.x + this.half_size * Math.sin(this.r + full * 3),
+            y: this.y + this.half_size * Math.cos(this.r + full * 3)
+        };
+
+        return {
+            p1: p1,
+            p2: p2,
+            p3: p3,
+            p4: p4
+        };
+    }
+    this.rotate = function() {
+        var speed = (60 - this.half_size) / 20;
+        this.r += speed * 0.002;
+        this.x += speed;
+        this.y += speed;
+    }
+    this.draw = function() {
+        var dots = this.getDots();
+        ctx.beginPath();
+        ctx.moveTo(dots.p1.x, dots.p1.y);
+        ctx.lineTo(dots.p2.x, dots.p2.y);
+        ctx.lineTo(dots.p3.x, dots.p3.y);
+        ctx.lineTo(dots.p4.x, dots.p4.y);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+
+
+        if (this.y - this.half_size > c.height) {
+            this.y -= c.height + 100;
+        }
+        if (this.x - this.half_size > c.width) {
+            this.x -= c.width + 100;
+        }
+    }
+    this.drawShadow = function() {
+        var dots = this.getDots();
+        var angles = [];
+        var points = [];
+
+        for (dot in dots) {
+            var angle = Math.atan2(light.y - dots[dot].y, light.x - dots[dot].x);
+            var endX = dots[dot].x + this.shadow_length * Math.sin(-angle - Math.PI / 2);
+            var endY = dots[dot].y + this.shadow_length * Math.cos(-angle - Math.PI / 2);
+            angles.push(angle);
+            points.push({
+                endX: endX,
+                endY: endY,
+                startX: dots[dot].x,
+                startY: dots[dot].y
+            });
+        };
+
+        for (var i = points.length - 1; i >= 0; i--) {
+            var n = i == 3 ? 0 : i + 1;
+            ctx.beginPath();
+            ctx.moveTo(points[i].startX, points[i].startY);
+            ctx.lineTo(points[n].startX, points[n].startY);
+            ctx.lineTo(points[n].endX, points[n].endY);
+            ctx.lineTo(points[i].endX, points[i].endY);
+            ctx.fillStyle = "#2c343f";
+            ctx.fill();
+        };
+    }
+}
+
+var boxes = [];
+
+function draw() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    drawLight();
+
+    for (var i = 0; i < boxes.length; i++) {
+        boxes[i].rotate();
+        boxes[i].drawShadow();
+    };
+    for (var i = 0; i < boxes.length; i++) {
+        collisionDetection(i)
+        boxes[i].draw();
+    };
+    requestAnimationFrame(draw);
+}
+
+resize();
+draw();
+
+while (boxes.length < 14) {
+    boxes.push(new Box());
+}
+
+window.onresize = resize;
+c.onmousemove = function(e) {
+    light.x = e.offsetX == undefined ? e.layerX : e.offsetX;
+    light.y = e.offsetY == undefined ? e.layerY : e.offsetY;
+}
+
+
+function collisionDetection(b){
+	for (var i = boxes.length - 1; i >= 0; i--) {
+		if(i != b){	
+			var dx = (boxes[b].x + boxes[b].half_size) - (boxes[i].x + boxes[i].half_size);
+			var dy = (boxes[b].y + boxes[b].half_size) - (boxes[i].y + boxes[i].half_size);
+			var d = Math.sqrt(dx * dx + dy * dy);
+			if (d < boxes[b].half_size + boxes[i].half_size) {
+			    boxes[b].half_size = boxes[b].half_size > 1 ? boxes[b].half_size-=1 : 1;
+			    boxes[i].half_size = boxes[i].half_size > 1 ? boxes[i].half_size-=1 : 1;
+			}
+		}
+	}
+}
 </script>
 </head>
-<canvas id="c"></canvas>
+<canvas id="canvas"></canvas>
 </html>

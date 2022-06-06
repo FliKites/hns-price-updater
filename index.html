@@ -1,7 +1,7 @@
 <html>
   <script>
 let event = input.config();
-let name = async fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${event.Name}`);
+let name = async fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=HNS_USDT`);
 let datas = async name.json();
 let rare = async console.log(datas);
 

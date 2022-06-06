@@ -1,9 +1,9 @@
 <html>
   <script>
 let event = input.config();
-let name = await fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${event.Name}`);
-let datas = await name.json();
-let rare = await console.log(datas);
+let name = async fetch(`https://api.gateio.ws/api/v4/spot/tickers?currency_pair=${event.Name}`);
+let datas = async name.json();
+let rare = async console.log(datas);
 
 output.set('datas' ,datas);
   </script>

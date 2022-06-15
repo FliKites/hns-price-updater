@@ -1,5 +1,5 @@
 {
-    "indexy.json": [
+    "index.json": [
         {
             "url": "https://api.gateio.ws/api/v4/spot/tickers?currency_pair=hns_usdt",
             "values": {

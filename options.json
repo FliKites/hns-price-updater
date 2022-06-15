@@ -1,15 +1,15 @@
 {
-    "index.json": [
+    "indexy.json": [
         {
             "url": "https://api.gateio.ws/api/v4/spot/tickers?currency_pair=hns_usdt",
             "values": {
-                "Likes": {
-                    "parseStart": "\"last\":",
+                "Price": {
+                    "parseStart": "last",
                     "parseEnd": ",",
                     "storeAs": "number"
                 },
-                "Dislikes": {
-                    "parseStart": "\"change_percentage\":",
+                "Change": {
+                    "parseStart": "change_percentage",
                     "parseEnd": "}",
                     "storeAs": "number"
                 }

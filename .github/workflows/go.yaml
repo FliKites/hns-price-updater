@@ -1,5 +1,4 @@
-name: Deploy to Skynet
-
+name: api grabber
 on:
   push:
     branches: [main]

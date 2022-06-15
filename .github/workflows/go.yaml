@@ -10,5 +10,6 @@ jobs:
           endpoint: https://api.gateio.ws/api/v4/spot/tickers?currency_pair=hns_usdt
           configuration: '{ "method": "GET" }'
           save-location: /
-          save-name: index
+          save-name: 
           debug: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}

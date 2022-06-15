@@ -4,11 +4,11 @@
             "url": "https://api.gateio.ws/api/v4/spot/tickers?currency_pair=hns_usdt",
             "values": {
                 "Last Price": {
-                    "storeField": "data/0/last",
+                    "storeField": "/0/last",
                     "storeAs": "number"
                 },
                 "Percent Change": {
-                    "storeField": "data/0/change_percentage",
+                    "storeField": "/0/change_percentage",
                     "storeAs": "number"
                 }
             }

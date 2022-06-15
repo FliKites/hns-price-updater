@@ -1,3 +1,0 @@
-- name: API Grabber
-uses: ThatTimothy/api-grabber@v1.0.0
-  options: /opt.json

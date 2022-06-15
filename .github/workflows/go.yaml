@@ -12,4 +12,4 @@ jobs:
           save-location: /
           save-name: 
           debug: true
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token-configuration: ${{ secrets.GITHUB_TOKEN }}

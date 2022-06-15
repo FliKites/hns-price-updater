@@ -1,8 +1,4 @@
 name: API Grabber 
-
-on:
-  push:
-    branches: [main]
-  - name: API Grabber
+- name: API Grabber
 uses: ThatTimothy/api-grabber@v1.0.0
   options: /opt.json

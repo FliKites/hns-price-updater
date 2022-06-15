@@ -13,4 +13,3 @@ jobs:
           save-name: index
           debug: true
           token-configuration: ${{ secrets.GITHUB_TOKEN }}
-          set-output: true

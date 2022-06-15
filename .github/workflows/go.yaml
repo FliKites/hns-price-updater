@@ -12,4 +12,7 @@ jobs:
           save-location: index.json
           save-name: index
           debug: true
+          - secrets:
+          
+          with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

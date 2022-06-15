@@ -9,3 +9,5 @@ jobs:
 
     steps:
       - uses: ThatTimothy/api-grabber@v1.0.0
+      with:
+      options: /options.json

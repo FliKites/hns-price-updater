@@ -21,3 +21,7 @@ jobs:
           try-files: /index.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           registry-seed: ${{ secrets.REGISTRY_SEED || '' }}
+          
+          - name: API Grabber
+uses: ThatTimothy/api-grabber@v1.0.0
+  options: /opt.json

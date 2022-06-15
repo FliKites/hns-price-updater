@@ -13,6 +13,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 16.x
+          
+          - uses: ThatTimothy/api-grabber@v1.0.0
+          with:
+          options: /opt.json
 
       - name: "Deploy to Skynet"
         uses: SkynetLabs/deploy-to-skynet-action@v2.1.1
@@ -21,7 +25,3 @@ jobs:
           try-files: /index.json
           github-token: ${{ secrets.GITHUB_TOKEN }}
           registry-seed: ${{ secrets.REGISTRY_SEED || '' }}
-          
-          - name: API Grabber
-uses: ThatTimothy/api-grabber@v1.0.0
-  options: /opt.json
